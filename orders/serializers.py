@@ -48,6 +48,7 @@ class OrderOffersSerializer(serializers.ModelSerializer):
         model = OffersOrder
         fields = '__all__'
 
+
 # Создание нового предложения
 class OfferCreateSerializer(serializers.ModelSerializer):
     # client = UserSerializer(read_only=True)

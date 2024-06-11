@@ -31,27 +31,12 @@ class OrderDetailView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
     lookup_field = 'idx'
 
-    # lookup_field = 'idx'
-
-    # def get_object(self, idx):
-    #     try:
-    #         return Order.objects.get(idx=idx)
-    #     except Order.DoesNotExist:
-    #         raise Http404
-
     def get(self, request, *args, **kwargs):
-        # snippet = self.get_object()
-        # serializer = OrderSerializer(snippet)
-
-        # kwargs.get('idx')
         order = Order.objects.get(idx=kwargs.get('idx'))
         print(order.description)
 
         serializer = OrderSerializer(order)
         serializer_offers = OrderOffersSerializer()
-
-        # offer = Offer.objects.get(id=offer_id)
-        # serializer = OrderOffersSerializer(offer)
 
         try:
             return Response({
@@ -76,25 +61,9 @@ class OrderDetailOffersView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
     lookup_field = 'idx'
 
-    # lookup_field = 'idx'
-
-    # def get_object(self, idx):
-    #     try:
-    #         return Order.objects.get(idx=idx)
-    #     except Order.DoesNotExist:
-    #         raise Http404
-
     def get(self, request, *args, **kwargs):
-        # snippet = self.get_object()
-        # serializer = OrderSerializer(snippet)
-
-        # kwargs.get('idx')
         order = Order.objects.get(idx=kwargs.get('idx'))
-        # print(order.description)
         serializer_offers = OrderOffersSerializer()
-
-        # offer = Offer.objects.get(id=offer_id)
-        # serializer = OrderOffersSerializer(offer)
 
         try:
             return Response({
@@ -147,7 +116,6 @@ class PendingOrdersView(generics.ListAPIView):
         if date:
             parsed_date = timezone.datetime.strptime(date, '%d-%m-%Y')  # Пример формата: "01-06-2024"
             queryset = queryset.filter(cargo_deliv_start_at__date=parsed_date)
-            # queryset = queryset.filter(cargo_deliv_start_at__in=date)
 
         # Сумма
         if min_amount:
@@ -168,7 +136,6 @@ class PendingOrdersView(generics.ListAPIView):
 
     def get_serializer_class(self):
         return OrderSerializer
-    # serializer_class = OrderSerializer
 
 
 # Представление для подтверждение - заявки

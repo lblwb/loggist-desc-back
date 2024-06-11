@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     #
     'rest_framework',
     'rest_framework_simplejwt',
-    # 'rest_framework_swagger',
     'drf_yasg',
     #
     'orders',

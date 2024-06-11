@@ -4,7 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from .views import OrderListCreateView, OrderDetailView, MyOrdersView, AcceptOrderView, PendingOrdersView, \
     OfferCreateAPIView, OrderDetailOffersView
 
-# Api -> Заявки
+# Api -> Orders [Заявки]
 urlpatterns = [
     # Создание новой заявки
     path('orders/new', OrderListCreateView.as_view(), name='order-list-create'),
@@ -21,12 +21,9 @@ urlpatterns = [
     # Создание нового предложения
     path('orders/<str:idx>/offers/new', OfferCreateAPIView.as_view(), name="order-offers-create"),
 
-
     # path('/orders/offers/list', OfferCreateAPIView.as_view(), name="order-offers-create"),
-
     # Подтверждение оффера
     # path('orders/<str:idx>/offer/<str:idx>/accept', AcceptOrderView.as_view(), name='order-offer-accept-order'),
-
     # Отклонение оффера
     # path('orders/<str:idx>/offer/<str:idx>/cancel', AcceptOrderView.as_view(), name='cancel-order'),
 
@@ -36,5 +33,3 @@ urlpatterns = [
     # Orders -> Current user
     path('orders/by_user', MyOrdersView.as_view(), name='my-orders'),
 ]
-
-# urlpatterns = format_suffix_patterns(urlpatterns)

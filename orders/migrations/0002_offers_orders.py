@@ -2,12 +2,6 @@
 
 from django.conf import settings
 from django.db import migrations, models
-import django.db.models.deletion
-
-
-# from backend.orders.models import Order
-
-# from orders.models import Order  # Update the import statement
 
 
 class Migration(migrations.Migration):

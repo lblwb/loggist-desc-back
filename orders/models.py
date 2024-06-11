@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Заявки
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -65,20 +66,31 @@ class Order(models.Model):
 
     def __str__(self):
         return '%s — %s | %s | %s | Отправление: %s / [%s - %s]' % (
-        self.cargo_inf_from, self.cargo_inf_to, self.cargo_type, self.status, self.cargo_deliv_start_at, self.client,
-        self.courier)
+            self.cargo_inf_from, self.cargo_inf_to, self.cargo_type, self.status, self.cargo_deliv_start_at,
+            self.client,
+            self.courier)
 
 
 # Офферы к заявке
 class OffersOrder(models.Model):
+    # Уникальный идентификатор
     idx = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    # Связь с заявкой
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='offers')
+
+    # Сумма оффера
     offer_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Дата оффера
     offer_date = models.DateTimeField(auto_now_add=True)
+
+    # Пользователь, сделавший оффер
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='offers_made')
 
     def __str__(self):
-        return f'Offer {self.idx} for Order {self.order.id} by User {self.user.id} with amount {self.offer_amount}'
+        return f'Offer {self.idx} for Order {self.order.idx} by User {self.user.id} with amount {self.offer_amount}'
+
 
 # Чат заявки
 class OrderChat(models.Model):
@@ -100,6 +112,7 @@ class OrderChat(models.Model):
 
     def __str__(self):
         return 'Chat for Order %s between %s and %s' % (self.order.idx, self.client, self.courier)
+
 
 # Чат - Сообщения - по заявке
 class OrderChatMsg(models.Model):
