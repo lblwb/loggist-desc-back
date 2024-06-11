@@ -3,10 +3,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
-
-# Create your models here.
-
-
+# Заявки
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -72,7 +69,7 @@ class Order(models.Model):
         self.courier)
 
 
-#
+# Офферы к заявке
 class OffersOrder(models.Model):
     idx = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='offers')
@@ -82,3 +79,44 @@ class OffersOrder(models.Model):
 
     def __str__(self):
         return f'Offer {self.idx} for Order {self.order.id} by User {self.user.id} with amount {self.offer_amount}'
+
+# Чат заявки
+class OrderChat(models.Model):
+    # Уникальный идентификатор
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+
+    # Связь с заявкой
+    order = models.ForeignKey(Order, related_name='chats', on_delete=models.CASCADE)
+
+    # Связь с клиентом
+    client = models.ForeignKey(User, related_name='client_chats', on_delete=models.CASCADE)
+
+    # Связь с курьером
+    courier = models.ForeignKey(User, related_name='courier_chats', null=True, blank=True, on_delete=models.SET_NULL)
+
+    # Автоматические временные метки
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Chat for Order %s between %s and %s' % (self.order.idx, self.client, self.courier)
+
+# Чат - Сообщения - по заявке
+class OrderChatMsg(models.Model):
+    # Уникальный идентификатор
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+
+    # Связь с чатом
+    chat = models.ForeignKey(OrderChat, related_name='messages', on_delete=models.CASCADE)
+
+    # Отправитель
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Сообщение
+    message = models.TextField()
+
+    # Время отправки
+    sent_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Message from %s in Chat %s' % (self.sender, self.chat.id)
