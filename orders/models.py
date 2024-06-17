@@ -22,9 +22,9 @@ class Order(models.Model):
     ]
 
     # Уникальный идентификатор
-    # id = models.IntegerField()
+    # id = models.BigIntegerField()
     #
-    idx = models.CharField(default=uuid.uuid4(), primary_key=True, max_length=255)
+    idx = models.CharField(default=uuid.uuid4(), primary_key=False, max_length=255)
 
     # Тип груза
     cargo_type = models.CharField(default="object", max_length=255)
@@ -57,12 +57,14 @@ class Order(models.Model):
     courier = models.ForeignKey(User, related_name='courier_orders', null=True, blank=True,
                                 on_delete=models.SET_NULL)
 
+    # offers = models.ManyToManyField('OffersOrder', related_name='offers')
+
     # Автоматические временные метки
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def get_offers(self):
-        return self.offers.all()
+    # def get_offers(self):
+    #     return self.offers.all()
 
     def __str__(self):
         return '%s — %s | %s | %s | Отправление: %s / [%s - %s]' % (
@@ -73,11 +75,19 @@ class Order(models.Model):
 
 # Офферы к заявке
 class OffersOrder(models.Model):
+    class Meta:
+        db_table = 'orders_offers'
+
+    # id = models.BigIntegerField()
+
     # Уникальный идентификатор
-    idx = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    idx = models.CharField(default=uuid.uuid4(), primary_key=False, max_length=255)
 
     # Связь с заявкой
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='offers')
+    # order = models.ForeignKey(Order, related_name='offers', on_delete=models.CASCADE)
+
+    order = models.ForeignKey(Order, related_name='offers',blank=True, on_delete=models.CASCADE, )
+    # Другие поля
 
     # Сумма оффера
     offer_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -86,19 +96,26 @@ class OffersOrder(models.Model):
     offer_date = models.DateTimeField(auto_now_add=True)
 
     # Пользователь, сделавший оффер
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='offers_made')
+    courier = models.ForeignKey(User, related_name='courier_offer', null=True, blank=True,
+                                on_delete=models.SET_NULL)
 
     def __str__(self):
-        return f'Offer {self.idx} for Order {self.order.idx} by User {self.user.id} with amount {self.offer_amount}'
+        # return f'Offer {self.idx} for Order {self.order.idx} by User {self.courier.id} with amount {self.offer_amount}'
+        return f'Предложение -- %s — %s | %s ' % (self.idx, self.courier, self.offer_amount)
 
 
 # Чат заявки
 class OrderChat(models.Model):
-    # Уникальный идентификатор
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    class Meta:
+        db_table = 'orders_chats'
+
+    # id = models.BigIntegerField()
+    #
+    idx = models.CharField(default=uuid.uuid4(), primary_key=False, max_length=255)
 
     # Связь с заявкой
-    order = models.ForeignKey(Order, related_name='chats', on_delete=models.CASCADE)
+
+    order = models.ForeignKey(Order, related_name='chats', blank=True, on_delete=models.CASCADE)
 
     # Связь с клиентом
     client = models.ForeignKey(User, related_name='client_chats', on_delete=models.CASCADE)
@@ -116,11 +133,12 @@ class OrderChat(models.Model):
 
 # Чат - Сообщения - по заявке
 class OrderChatMsg(models.Model):
-    # Уникальный идентификатор
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+
+    class Meta:
+        db_table = 'orders_chats_msgs'
 
     # Связь с чатом
-    chat = models.ForeignKey(OrderChat, related_name='messages', on_delete=models.CASCADE)
+    chat = models.ForeignKey(OrderChat, related_name='messages', blank=True, on_delete=models.CASCADE)
 
     # Отправитель
     sender = models.ForeignKey(User, on_delete=models.CASCADE)

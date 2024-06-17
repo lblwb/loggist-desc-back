@@ -38,7 +38,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     # api
-    path("api/", include("orders.urls")),
+    path("api/orders/", include("orders.urls")),
 
     # jwt -> auth
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
