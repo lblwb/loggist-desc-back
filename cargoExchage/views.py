@@ -1,10 +1,11 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serialize import UserDataSerializer
+from .serialize import UserSerializer
 
 
 class UserViewGet(APIView):
@@ -13,8 +14,8 @@ class UserViewGet(APIView):
     def get(self, request):
         user = request.user
         #
-        serializer = UserDataSerializer(user)
+        user_serializer = UserSerializer(user)
 
         return Response({
-            "user": serializer.data
+            "user": user_serializer.data,
         })

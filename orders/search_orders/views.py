@@ -43,7 +43,7 @@ class PendingOrdersView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset.order_by('-created_at'), many=True)
         return Response({
             "orders": serializer.data,
             "success": True

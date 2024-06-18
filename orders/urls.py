@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from .orders.detail import OrderDetailView
+from .orders.list import OrderListCreateView
 from .user.my_orders import MyOrdersView
 
 # from sub.orders.chat.views import ChatMessagesView, NewChatMessageView
@@ -12,8 +13,9 @@ from .user.my_orders import MyOrdersView
 
 # Api -> Orders [Заявки]
 urlpatterns = [
+
     # Создание новой заявки
-    # path('orders/new', OrderListCreateView.as_view(), name='order-list-create'),
+    path('request/new', OrderListCreateView.as_view(), name='order-list-create'),
     #
 
 

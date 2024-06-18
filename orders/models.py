@@ -24,7 +24,7 @@ class Order(models.Model):
     # Уникальный идентификатор
     # id = models.BigIntegerField()
     #
-    idx = models.CharField(default=uuid.uuid4(), primary_key=False, max_length=255)
+    idx = models.CharField(default=uuid.uuid4, primary_key=False, max_length=255)
 
     # Тип груза
     cargo_type = models.CharField(default="object", max_length=255)
@@ -63,8 +63,6 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # def get_offers(self):
-    #     return self.offers.all()
 
     def __str__(self):
         return '%s — %s | %s | %s | Отправление: %s / [%s - %s]' % (
